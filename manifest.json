@@ -1,7 +1,7 @@
 {
   "name": "SBD Steel Matrix",
   "short_name": "Steel Matrix",
-  "description": "Steel parts & drawing locator — 37F-1190",
+  "description": "Steel Matrix — 37F-1190",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0D0D0D",
