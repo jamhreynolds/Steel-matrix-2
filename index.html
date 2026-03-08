@@ -2,538 +2,421 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Steel Matrix">
-<meta name="theme-color" content="#F5A800">
-<title>SBD Steel Matrix</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;600&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Steel Locator — 37F-1190</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --yellow: #F5A800;
-  --yellow-dk: #C88600;
-  --black: #0D0D0D;
-  --surface: #141720;
-  --surface2: #1A1F2C;
-  --surface3: #1E2436;
-  --border: #252C3A;
-  --border2: #1A1F2A;
-  --text: #E8ECF2;
-  --muted: #7A8499;
-  --green: #2ECC71;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  :root {
+    --bg: #0d0f12;
+    --surface: #141720;
+    --border: #252a35;
+    --accent: #f5a623;
+    --accent2: #e8512a;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --text: #e8ecf0;
+    --muted: #6b7280;
+    --card: #1a1f2e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Prevent zoom on input focus on iOS */
+    font-size: 16px;
+  }
 
-html {
-  height: 100%;
-  /* iOS safe area support */
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
+  /* Header */
+  header {
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .logo span { color: var(--text); }
+  .doc-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 3px 7px;
+    border-radius: 4px;
+  }
+  .count-badge {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
 
-body {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: var(--black);
-  color: var(--text);
-  font-family: 'Roboto', sans-serif;
-  overflow: hidden;
-  /* Prevent iOS bounce scroll on body */
-  position: fixed;
-  width: 100%;
-}
+  /* Main */
+  main { padding: 20px 16px 30px; max-width: 600px; margin: 0 auto; }
 
-/* ── App Bar ── */
-.app-bar {
-  background: var(--surface);
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  border-bottom: 2.5px solid var(--yellow);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
-  z-index: 10;
-  /* iOS status bar padding */
-  padding-top: max(10px, env(safe-area-inset-top));
-}
+  /* Search bar */
+  .search-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .search-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px; /* prevent iOS zoom */
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); font-size: 14px; }
+  .clear-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 18px;
+    touch-action: manipulation;
+    min-width: 52px;
+  }
 
-/* ══════════════════════════════════════
-   STANLEY BLACK & DECKER STYLE LOGO
-   ══════════════════════════════════════ */
-.sbd-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  /* Filter tabs */
+  .filter-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    touch-action: manipulation;
+    transition: all 0.15s;
+    min-height: 38px;
+  }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
 
-.sbd-oval {
-  background: var(--yellow);
-  border-radius: 10px;
-  padding: 5px 12px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 0;
-  box-shadow: 0 2px 12px rgba(245,168,0,.45), inset 0 1px 0 rgba(255,255,255,.3);
-  min-width: 54px;
-}
-.oval-top {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 900; font-size: 20px;
-  letter-spacing: 3.5px; color: #000;
-  line-height: 1; text-transform: uppercase;
-}
-.oval-rule {
-  width: 88%; height: 1.5px;
-  background: #A07000; margin: 2px 0; border-radius: 1px;
-}
-.oval-bot {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700; font-size: 6.5px;
-  letter-spacing: 2px; color: rgba(0,0,0,.6);
-  text-transform: uppercase; line-height: 1; white-space: nowrap;
-}
+  /* Results info */
+  .results-info {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    min-height: 16px;
+  }
+  .results-info span { color: var(--accent); font-weight: 600; }
 
-.title-stack { display: flex; flex-direction: column; gap: 2px; line-height: 1; }
-.title-main {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800; font-size: 19px;
-  letter-spacing: 2px; color: var(--text);
-  text-transform: uppercase; line-height: 1;
-}
-.title-main em { color: var(--yellow); font-style: normal; }
-.title-sub {
-  font-size: 9px; font-weight: 500;
-  letter-spacing: 2.5px; color: var(--muted);
-  text-transform: uppercase;
-}
+  /* Result cards */
+  .results-grid { display: flex; flex-direction: column; gap: 8px; }
 
-.app-bar-spacer { flex: 1; }
-.count-chip {
-  background: rgba(245,168,0,.1);
-  border: 1px solid rgba(245,168,0,.3);
-  border-radius: 20px; padding: 4px 10px;
-  font-family: 'Roboto Mono', monospace;
-  font-size: 10px; font-weight: 600;
-  color: var(--yellow); letter-spacing: .5px;
-}
+  .result-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    animation: slideIn 0.18s ease;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .result-card:active { background: #1f2535; border-color: var(--accent); }
 
-/* ── Offline Banner ── */
-.offline-banner {
-  display: none;
-  background: #333;
-  color: #aaa;
-  text-align: center;
-  font-size: 11px;
-  padding: 4px;
-  letter-spacing: 1px;
-}
-.offline-banner.show { display: block; }
+  .speak-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+    touch-action: manipulation;
+    transition: all 0.15s;
+  }
+  .speak-btn:active, .speak-btn.speaking {
+    border-color: var(--green);
+    background: rgba(46,204,113,0.1);
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-/* ── Scroll Content ── */
-.content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  background: var(--black);
-}
-.content::-webkit-scrollbar { display: none; }
-.inner {
-  padding: 14px 13px;
-  padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom)));
-}
+  .result-part {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.3;
+  }
+  .result-drawing {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+  }
+  .result-qty {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .result-qty span { color: var(--text); font-weight: 600; }
 
-/* ── Search Field ── */
-.search-wrap { margin-bottom: 12px; }
-.search-field {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  display: flex; align-items: center;
-  gap: 10px; padding: 0 8px 0 14px;
-  transition: border-color .2s, box-shadow .2s;
-}
-.search-field:focus-within {
-  border-color: var(--yellow);
-  box-shadow: 0 0 0 2px rgba(245,168,0,.12);
-}
-.search-ico { width: 18px; height: 18px; fill: var(--muted); flex-shrink: 0; }
-.search-input {
-  flex: 1; background: transparent; border: none; outline: none;
-  font-family: 'Roboto Mono', monospace; font-size: 16px;
-  color: var(--text); padding: 14px 0;
-  /* iOS: prevent zoom on focus with font-size: 16px */
-}
-.search-input::placeholder { color: var(--muted); font-size: 14px; font-family: 'Roboto', sans-serif; }
-.clear-btn {
-  width: 34px; height: 34px; background: var(--surface2);
-  border: none; border-radius: 8px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s; flex-shrink: 0;
-}
-.clear-btn:active { background: var(--border); }
-.clear-btn svg { width: 14px; height: 14px; fill: var(--muted); }
+  .location-badge {
+    background: var(--accent);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    text-align: center;
+    min-width: 70px;
+  }
 
-/* ── Filter Chips ── */
-.filter-row {
-  display: flex; gap: 7px; margin-bottom: 13px;
-  overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
-}
-.filter-row::-webkit-scrollbar { display: none; }
-.chip {
-  display: flex; align-items: center; gap: 5px;
-  padding: 7px 14px; border-radius: 8px;
-  border: 1.5px solid var(--border);
-  background: transparent; color: var(--muted);
-  font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 500;
-  cursor: pointer; white-space: nowrap; touch-action: manipulation;
-  transition: all .15s; min-height: 36px;
-}
-.chip svg { width: 12px; height: 12px; fill: currentColor; opacity: .6; }
-.chip.active {
-  background: var(--yellow); border-color: var(--yellow);
-  color: #000; font-weight: 700;
-  box-shadow: 0 2px 10px rgba(245,168,0,.3);
-}
-.chip.active svg { opacity: 1; }
+  /* Tap hint on cards */
+  .tap-hint {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-style: italic;
+  }
 
-/* ── Results Meta ── */
-.results-meta {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 10px; min-height: 16px;
-}
-.results-label {
-  font-family: 'Roboto Mono', monospace;
-  font-size: 11px; color: var(--muted);
-}
-.results-label .hl { color: var(--yellow); font-weight: 700; }
-.divider { flex: 1; height: 1px; background: var(--border2); }
+  /* Highlight */
+  mark {
+    background: rgba(245, 166, 35, 0.25);
+    color: var(--accent);
+    border-radius: 2px;
+    padding: 0 1px;
+  }
 
-/* ── Cards ── */
-.results-list { display: flex; flex-direction: column; gap: 8px; }
-.result-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 14px; padding: 13px;
-  display: grid; grid-template-columns: 1fr auto auto;
-  gap: 10px; align-items: center;
-  animation: cardIn .16s cubic-bezier(.34,1.56,.64,1) both;
-  cursor: pointer;
-  transition: background .1s, border-color .1s, transform .1s;
-  box-shadow: 0 1px 4px rgba(0,0,0,.4);
-}
-.result-card:active {
-  background: var(--surface3);
-  border-color: var(--yellow);
-  transform: scale(0.984);
-}
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(8px) scale(.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.result-part {
-  font-family: 'Roboto Mono', monospace;
-  font-size: 13px; font-weight: 600; color: var(--text);
-  margin-bottom: 3px; line-height: 1.3;
-}
-.result-steel {
-  font-family: 'Roboto Mono', monospace;
-  font-size: 11px; color: var(--yellow); font-weight: 600;
-  margin-bottom: 2px; cursor: pointer;
-  display: flex; align-items: center; gap: 3px;
-}
-.result-steel svg { width: 10px; height: 10px; fill: var(--yellow); flex-shrink: 0; }
-.result-qty { font-size: 10px; color: var(--muted); }
-.result-qty span { color: var(--text); font-weight: 600; }
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted);
+  }
+  .empty-state .icon { font-size: 52px; margin-bottom: 14px; }
+  .empty-state p { font-size: 14px; line-height: 1.6; }
 
-.location-badge {
-  background: var(--yellow); color: #000;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800; font-size: 17px; letter-spacing: 1px;
-  padding: 7px 11px; border-radius: 10px;
-  white-space: nowrap; text-align: center; min-width: 68px;
-  box-shadow: 0 2px 8px rgba(245,168,0,.3); line-height: 1.2;
-}
+  /* No results */
+  .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
 
-.speak-btn {
-  width: 36px; height: 36px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; display: flex; align-items: center;
-  justify-content: center; cursor: pointer; font-size: 16px;
-  transition: all .15s; flex-shrink: 0; touch-action: manipulation;
-}
-.speak-btn:active, .speak-btn.speaking {
-  border-color: var(--green); background: rgba(46,204,113,.1);
-}
-
-mark {
-  background: rgba(245,168,0,.2); color: var(--yellow);
-  border-radius: 2px; padding: 0 1px;
-}
-
-/* ── Empty / No Results ── */
-.empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
-.empty-icon {
-  width: 64px; height: 64px; margin: 0 auto 16px;
-  background: var(--surface2); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-}
-.empty-icon svg { width: 30px; height: 30px; fill: var(--muted); opacity: .45; }
-.empty-state p { font-size: 13px; line-height: 1.7; }
-.empty-hint {
-  display: inline-block; margin-top: 10px;
-  background: rgba(245,168,0,.1); border: 1px solid rgba(245,168,0,.25);
-  border-radius: 6px; padding: 3px 12px;
-  font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--yellow);
-}
-.no-results {
-  text-align: center; padding: 40px 20px; color: var(--muted);
-  font-family: 'Roboto Mono', monospace; font-size: 12px; line-height: 1.8;
-}
-
-/* ── Install Banner ── */
-.install-banner {
-  display: none;
-  background: var(--surface2);
-  border-top: 1px solid var(--border);
-  padding: 10px 14px;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 10px;
-}
-.install-banner.show { display: flex; }
-.install-banner p { flex: 1; font-size: 12px; color: var(--muted); line-height: 1.4; }
-.install-banner p strong { color: var(--text); }
-.install-btn {
-  background: var(--yellow); color: #000;
-  border: none; border-radius: 8px;
-  padding: 8px 16px;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700; font-size: 14px; letter-spacing: 1px;
-  cursor: pointer; flex-shrink: 0; touch-action: manipulation;
-}
-.dismiss-btn {
-  background: none; border: none; color: var(--muted);
-  font-size: 18px; cursor: pointer; padding: 4px; flex-shrink: 0;
-}
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: var(--green);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    padding: 12px 28px;
+    border-radius: 30px;
+    transition: transform 0.3s ease;
+    z-index: 200;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(46,204,113,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-<!-- App Bar -->
-<div class="app-bar">
-  <div class="sbd-logo">
-    <div class="sbd-oval">
-      <div class="oval-top">SBD</div>
-      <div class="oval-rule"></div>
-      <div class="oval-bot">INDUSTRIAL</div>
-    </div>
-    <div class="title-stack">
-      <div class="title-main">STEEL <em>LOCATOR</em></div>
-      <div class="title-sub">Parts &amp; Steel thisteel' · 37F-1190</div>
-    </div>
+<header>
+  <div class="logo">Steel <span>Locator</span></div>
+  <div class="doc-id">37F-1190</div>
+  <div class="count-badge" id="totalCount">203 parts</div>
+</header>
+
+<main>
+  <div class="search-row">
+    <input class="search-input" id="searchInput" type="text" placeholder="Part #, drawing #, or location..." oninput="handleSearch(this.value)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text">
+    <button class="clear-btn" onclick="clearSearch()">✕</button>
   </div>
-  <div class="app-bar-spacer"></div>
-  <div class="count-chip" id="totalCount">— parts</div>
-</div>
 
-<!-- Offline Banner -->
-<div class="offline-banner" id="offlineBanner">⚡ OFFLINE MODE — data cached locally</div>
-
-<!-- Scrollable Content -->
-<div class="content">
-  <div class="inner">
-
-    <!-- Search -->
-    <div class="search-wrap">
-      <div class="search-field">
-        <svg class="search-ico" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        <input class="search-input" id="searchInput" type="search"
-          placeholder="Part #, steel id, or location…"
-          oninput="handleSearch(this.value)"
-          autocomplete="off" autocorrect="off" autocapitalize="off"
-          spellcheck="false" inputmode="text">
-        <button class="clear-btn" onclick="clearSearch()">
-          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Filter Chips -->
-    <div class="filter-row">
-      <button class="chip active" onclick="setFilter('all',this)">
-        <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>All Fields
-      </button>
-      <button class="chip" onclick="setFilter('part',this)">
-        <svg viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z"/></svg>Part #
-      </button>
-      <button class="chip" onclick="setFilter('steel id',this)">
-        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>steel #
-      </button>
-      <button class="chip" onclick="setFilter('location',this)">
-        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Location
-      </button>
-    </div>
-
-    <!-- Results Meta -->
-    <div class="results-meta">
-      <div class="results-label" id="resultsInfo"></div>
-      <div class="divider"></div>
-    </div>
-
-    <!-- Results -->
-    <div class="results-list" id="resultsGrid"></div>
-
+  <div class="filter-tabs">
+    <button class="tab active" onclick="setFilter('all', this)">All Fields</button>
+    <button class="tab" onclick="setFilter('part', this)">Part #</button>
+    <button class="tab" onclick="setFilter('drawing', this)">Drawing #</button>
+    <button class="tab" onclick="setFilter('location', this)">Location</button>
   </div>
-</div>
 
-<!-- Install Prompt Banner -->
-<div class="install-banner" id="installBanner">
-  <p><strong>Add to Home Screen</strong><br>Install for offline access in the warehouse</p>
-  <button class="install-btn" id="installBtn">INSTALL</button>
-  <button class="dismiss-btn" id="dismissBtn">✕</button>
-</div>
+  <div class="results-info" id="resultsInfo"></div>
+  <div class="results-grid" id="resultsGrid"></div>
+</main>
+
+<div class="toast" id="toast"></div>
 
 <script>
-// ── Data ──
-const DATA = [{"part":"783-0678C","steel id":"0101-0246-14375","qty":"8","location":"M006"},{"part":"703-05785C-BL","steel id":"0101-0246-18402","qty":"2","location":"M006"},{"part":"703-12069","steel id":"0101-0246-20125","qty":"5","location":"M009"},{"part":"703-05957 / 05977 / 12965","steel id":"0101-0246-20500","qty":"3","location":"M006"},{"part":"781-0453C-BL","steel id":"0102-0082-21375","qty":"1","location":"M006"},{"part":"703-12062 / 12225","steel id":"0103-0082-10500","qty":"1","location":"M11 A-2"},{"part":"783-0335A","steel id":"0103-0082-25125","qty":"3","location":"M006"},{"part":"734-3176-BL","steel id":"0103-0082-31510","qty":"2","location":"M9 R.4 SEC.4"},{"part":"734-3175-BL","steel id":"0103-0082-36170","qty":"2","location":"M007"},{"part":"703-08657","steel id":"0103-0097-21250","qty":"1","location":"M006"},{"part":"783-08687","steel id":"0103-0097-33750","qty":"1","location":"M8 R.2 SEC.3"},{"part":"783-08734","steel id":"0103-0097-37750","qty":"1","location":"M008"},{"part":"783-09276-BL","steel id":"0103-0097-44375","qty":"2","location":"M008"},{"part":"783-08689A","steel id":"0103-0097-44375","qty":"1","location":"M006"},{"part":"783-08606","steel id":"0103-0112-08000","qty":"1","location":"M11 A-4"},{"part":"783-08590","steel id":"0103-0112-08875","qty":"1","location":"M009"},{"part":"787-03074-BL","steel id":"0103-0112-18750","qty":"2","location":"M006"},{"part":"703-13225","steel id":"0104-0056-177750","qty":"1","location":"M009"},{"part":"783-08342","steel id":"0104-0071-12625","qty":"5","location":"M9 R.4 SEC.3"},{"part":"783-04548C","steel id":"0104-0071-15200","qty":"5","location":"M009"},{"part":"703-08718","steel id":"0104-0071-26000","qty":"2","location":"M009"},{"part":"703-08722","steel id":"0104-0071-43000","qty":"1","location":"M009"},{"part":"703-08558","steel id":"0104-0071-48000","qty":"4","location":"M11 B-4"},{"part":"783-1489D","steel id":"0104-0082-06500","qty":"3","location":"M006"},{"part":"703-13123A / 26A","steel id":"0104-0082-09125","qty":"7","location":"M9 R.5 SEC.2"},{"part":"763-04081D","steel id":"0104-0082-13000","qty":"5","location":"M9 R.8 SEC.6"},{"part":"783-08452 / 08550","steel id":"0104-0082-14750","qty":"3","location":"M11 L-3"},{"part":"703-20904 / 20924","steel id":"0104-0082-17250","qty":"2","location":"M009"},{"part":"703-09153","steel id":"0104-0082-36000","qty":"3","location":"M11 C-2"},{"part":"703-13663","steel id":"0104-0097-04000","qty":"1","location":"M11 C-7"},{"part":"703-12943 / 703-15461","steel id":"0104-0097-05625","qty":"2","location":"M11 I-9"},{"part":"703-14741","steel id":"0104-0097-07000","qty":"1","location":"M11 H-3"},{"part":"703-13123","steel id":"0104-0097-07250","qty":"2","location":"M11"},{"part":"703-13001","steel id":"0104-0097-09125","qty":"3","location":"M11"},{"part":"703-15581","steel id":"0104-0097-09750","qty":"2","location":"M006"},{"part":"703-13761 / 15661","steel id":"0104-0097-09875","qty":"2","location":"M11 J-1"},{"part":"703-12068","steel id":"0104-0097-10375","qty":"2","location":"M006"},{"part":"783-08249 / 08386 / 08405 / 08276","steel id":"0104-0097-11875","qty":"4","location":"M006"},{"part":"783-08276","steel id":"0104-0097-13375","qty":"3","location":"M006"},{"part":"703-13026","steel id":"0104-0097-15500","qty":"6","location":"M009"},{"part":"703-16043A","steel id":"0104-0097-15875","qty":"5","location":"M009"},{"part":"703-12981 / 12982","steel id":"0104-0097-16750","qty":"1","location":"M006"},{"part":"703-13284 / 13285","steel id":"0104-0097-17000","qty":"6","location":"M009"},{"part":"703-3511B-BL","steel id":"0104-0097-19125","qty":"1","location":"M006"},{"part":"703-08621-bl","steel id":"0104-0097-19625","qty":"2","location":"M009"},{"part":"783-08247","steel id":"0104-0097-24000","qty":"7","location":"M009"},{"part":"783-08394 / 08397","steel id":"0104-0097-25000","qty":"5","location":"M006"},{"part":"783-08396 / 08398","steel id":"0104-0097-26250","qty":"4","location":"M009"},{"part":"783-0209D / 783-04475","steel id":"0104-0097-36500","qty":"8","location":"M009"},{"part":"783-08727","steel id":"0104-0112-02500","qty":"3","location":"M11 B-1"},{"part":"703-12963","steel id":"0104-0112-07500","qty":"1","location":"M11 G-3"},{"part":"","steel id":"0104-0112-07875","qty":"1","location":"M11 F-3"},{"part":"703-13882","steel id":"0104-0112-08000","qty":"1","location":"M11 J-4"},{"part":"783-08741","steel id":"0104-0112-08250","qty":"3","location":"M11 J-5"},{"part":"703-09325A","steel id":"0104-0112-13000","qty":"7","location":"M9 R.7 SEC.2"},{"part":"703-13343","steel id":"0104-0112-14750","qty":"3","location":"M006"},{"part":"703-12182","steel id":"0104-0112-30500","qty":"3","location":"M009"},{"part":"783-08502","steel id":"0104-0127-03625","qty":"1","location":"M11 C-4"},{"part":"783-08492","steel id":"0104-0127-04000","qty":"2","location":"M11 E-8"},{"part":"703-14922","steel id":"0104-0127-05750","qty":"1","location":"M11 B-3"},{"part":"703-13723","steel id":"0104-0127-06250","qty":"1","location":"M11 A-9"},{"part":"703-09670","steel id":"0104-0127-09500","qty":"2","location":"M11 J-3"},{"part":"703-12302","steel id":"0104-0127-11000","qty":"1","location":"M006"},{"part":"783-08559","steel id":"0104-0127-12000","qty":"2","location":"M006"},{"part":"703-09148","steel id":"0104-0127-12250","qty":"1","location":"M006"},{"part":"783-08266","steel id":"0104-0127-15750","qty":"5","location":"M006"},{"part":"783-08463","steel id":"0104-0127-22000","qty":"3","location":"M007"},{"part":"703-08785A","steel id":"0104-0142-02750","qty":"8","location":"M006"},{"part":"783-08876A","steel id":"0104-0142-04125","qty":"1","location":"M011"},{"part":"783-12788","steel id":"0104-0142-04875","qty":"2","location":"M006"},{"part":"783-07350","steel id":"0104-0142-05375","qty":"6","location":"M006"},{"part":"703-17062","steel id":"0104-0142-06500","qty":"1","location":"M11"},{"part":"783-04556A","steel id":"0104-0142-06820","qty":"1","location":"M11 H-6"},{"part":"783-08408","steel id":"0104-0142-07125","qty":"13","location":"M006"},{"part":"703-09154a","steel id":"0104-0142-07250","qty":"2","location":"M11"},{"part":"703-0703D","steel id":"0104-0142-07750","qty":"8","location":"M006"},{"part":"703-26424 / 703-26425","steel id":"0104-0142-08375","qty":"12","location":"M006"},{"part":"703-09968A","steel id":"0104-0142-09500","qty":"2","location":"M11"},{"part":"783-08722 /23","steel id":"0104-0142-11625","qty":"3","location":"M11 A-8"},{"part":"783-06587","steel id":"0104-0142-11750","qty":"2","location":"M006"},{"part":"783-04568","steel id":"0104-0142-12000","qty":"2","location":"M006"},{"part":"703-08614A / 08615A","steel id":"0104-0142-12500","qty":"2","location":"M11 F-1"},{"part":"703-13541","steel id":"0104-0142-13750","qty":"2","location":"M006"},{"part":"703-09621","steel id":"0104-0142-16375","qty":"1","location":"M9 R.9 SEC.1"},{"part":"703-12065B","steel id":"0104-0142-25500","qty":"10","location":"M008"},{"part":"703-17281 / 17301","steel id":"0104-0157-08250","qty":"1","location":"M11"},{"part":"703-18100","steel id":"0104-0157-09250","qty":"1","location":"M11"},{"part":"703-20144","steel id":"0104-0157-11875","qty":"1","location":"M006"},{"part":"703-08754a","steel id":"0104-0171-07500","qty":"1","location":"M006"},{"part":"783-08286","steel id":"0104-0171-08500","qty":"2","location":"M11 G-1"},{"part":"703-09595","steel id":"0104-0171-08625","qty":"2","location":"M11"},{"part":"783-08287","steel id":"0104-0171-09875","qty":"8","location":"M006"},{"part":"783-08337","steel id":"0104-0171-12875","qty":"4","location":"M006"},{"part":"703-13061-BL","steel id":"0104-0171-13750","qty":"2","location":"M006"},{"part":"703-26734","steel id":"0104-0171-14250","qty":"2","location":"M006"},{"part":"703-25664 / 665","steel id":"0104-0171-16375","qty":"1","location":"M006"},{"part":"781-1048-BL","steel id":"0104-0171-17500","qty":"2","location":"M006"},{"part":"783-08280","steel id":"0104-0171-33125","qty":"3","location":"M008"},{"part":"783-08511","steel id":"0104-0186-07750","qty":"1","location":"M11 D-7"},{"part":"703-20665 / 20666","steel id":"0104-0186-08375","qty":"3","location":"M11 B-6"},{"part":"783-05730B / 08138","steel id":"0104-0186-10625","qty":"6","location":"M9 R.6 SEC.3"},{"part":"783-08650","steel id":"0104-0186-10750","qty":"3","location":"M11 J-2"},{"part":"703-08600","steel id":"0104-0186-17500","qty":"2","location":"M009"},{"part":"703-20667 / 8 - 20964 / 5","steel id":"0104-0186-18250","qty":"2","location":"M6"},{"part":"703-12485","steel id":"0104-0246-08750","qty":"2","location":"M11 F-2"},{"part":"787-01503","steel id":"0110-0082-01500","qty":"3","location":"M11"},{"part":"781-04361","steel id":"0114-0246-10125","qty":"6","location":"M006"},{"part":"717-04075B","steel id":"0115-0171-06500","qty":"4","location":"M006"},{"part":"707-05113","steel id":"0118-0120-03375","qty":"2","location":"M006"},{"part":"783-06302","steel id":"0303-0034-29750","qty":"4","location":"M002"},{"part":"783-06598","steel id":"0303-0034-30000","qty":"4","location":"M002"},{"part":"783-06594/96/99","steel id":"0303-0034-32500","qty":"8","location":"M002"},{"part":"783-05736 / 37","steel id":"0303-0034-39750","qty":"4","location":"M002"},{"part":"783-08279","steel id":"0303-0044-55000","qty":"32","location":"M002"},{"part":"703-08642A","steel id":"0303-0056-25500","qty":"8","location":"M002"},{"part":"703-26991","steel id":"0303-0071-30000","qty":"","location":"SERVICE"},{"part":"783-0621-BL","steel id":"0303-0082-51250","qty":"44","location":"M006"},{"part":"783-06400A","steel id":"0303-0087-32000","qty":"26","location":"M002"},{"part":"783-06035 / 08575","steel id":"0303-0097-56500","qty":"20","location":"M002"},{"part":"783-08460","steel id":"0324-0097-35000","qty":"28","location":"M002"},{"part":"783-08370","steel id":"0401-0112-36000","qty":"2","location":"M11 L-1"},{"part":"783-08510","steel id":"0401-0038-13500","qty":"2","location":"M004"},{"part":"783-08547 / 08717","steel id":"0401-0038-14875","qty":"2","location":"M006"},{"part":"703-09083 / 703-09714A","steel id":"0401-0044-13250","qty":"3","location":"M004"},{"part":"783-08614","steel id":"0401-0044-14625","qty":"1","location":"M11 E-7"},{"part":"703-08622","steel id":"0401-0056-05250","qty":"1","location":"M11 B-7"},{"part":"703-15201A","steel id":"0401-0056-05625","qty":"1","location":"M11 D-6"},{"part":"736-04227A / 736-04228A","steel id":"0401-0056-05750","qty":"1","location":"M11 D-1"},{"part":"703-11100","steel id":"0401-0056-06250","qty":"1","location":"M11 H-4"},{"part":"703-09472","steel id":"0401-0056-07000","qty":"1","location":"M11 A-5"},{"part":"703-11503A","steel id":"0401-0056-08250","qty":"1","location":"M009"},{"part":"783-08453","steel id":"0401-0056-19000","qty":"3","location":"M11"},{"part":"790-00407A / 00410A","steel id":"0401-0063-22500","qty":"2","location":"M009"},{"part":"756-06163","steel id":"0401-0063-06800","qty":"4","location":"M11"},{"part":"783-08391-bl","steel id":"0403-0044-32500","qty":"3","location":"M007"},{"part":"703-15761","steel id":"0403-0071-05269","qty":"10","location":"M9 WALL"},{"part":"703-12843-BL","steel id":"0403-0071-27500","qty":"2","location":"M007"},{"part":"707-05079","steel id":"0403-0082-06375","qty":"5","location":"M009"},{"part":"783-04275 / 783-04326","steel id":"0403-0097-06000","qty":"8","location":"M009WALL"},{"part":"783-06227","steel id":"0422-0038-07000","qty":"14","location":"M009WALL"},{"part":"783-08567","steel id":"0422-0044-14250","qty":"1","location":"M11 I-10"},{"part":"745-06023A / 06024A","steel id":"0708-0063-08375","qty":"1","location":"M006"},{"part":"745-06025 / 06026","steel id":"0708-0112-01750","qty":"2","location":"M011"},{"part":"783-05129","steel id":"0708-0127-04000","qty":"2","location":"M11"},{"part":"783-08565A","steel id":"0711-0063-03750","qty":"3","location":"M11"},{"part":"783-08746","steel id":"0711-0063-03750","qty":"2","location":"M11 G-8"},{"part":"703-09195","steel id":"0901-0044-10600","qty":"2","location":"M011"},{"part":"783-08350","steel id":"0901-0034-13375","qty":"3","location":"M011"},{"part":"703-16042","steel id":"0901-0044-18500","qty":"2","location":"M009"},{"part":"703-16041","steel id":"0901-0056-16750","qty":"3","location":"M009"},{"part":"751-11053","steel id":"0903-0028-06125","qty":"2","location":"M9 WALL"},{"part":"","steel id":"0101-0171-10750","qty":"","location":"M006"},{"part":"","steel id":"0101-0171-10250","qty":"","location":"M006"},{"part":"783-05417 / 783-05418","steel id":"0101-0142-19250","qty":"6","location":"M006"},{"part":"707-04409B","steel id":"0101-0156-04000","qty":"1","location":"M006"},{"part":"783-05630E","steel id":"0101-0156-04000","qty":"7","location":"M006"},{"part":"783-05630B","steel id":"0101-0157-04250","qty":"1","location":"M11 E-5"},{"part":"783-08585","steel id":"0101-0157-04000","qty":"2","location":"M11 F-4"},{"part":"703-08656","steel id":"0101-0171-05000","qty":"2","location":"M11 G-8"},{"part":"703-09914","steel id":"0101-0171-05500","qty":"1","location":"M11 G-6"},{"part":"783-10538A","steel id":"0101-0171-06000","qty":"2","location":"M11 E-6"},{"part":"783-05381 / 05802","steel id":"0101-0171-06250","qty":"1","location":"M11 D-8"},{"part":"703-09185A / 703-12349","steel id":"0101-0171-07500","qty":"3","location":"M11 B-5"},{"part":"703-05468","steel id":"0101-0171-07750","qty":"1","location":"M11 I-8"},{"part":"703-08591A","steel id":"0101-0171-08500","qty":"2","location":"M11 L-3"},{"part":"781-10244","steel id":"0101-0171-08000","qty":"3","location":"M011"},{"part":"703-26741","steel id":"0101-0171-08690","qty":"1","location":"M11"},{"part":"783-08377 / 703-11052C","steel id":"0101-0171-09000","qty":"6","location":"M6"},{"part":"703-26186","steel id":"0101-0171-09125","qty":"4","location":"M006"},{"part":"783-04688-BL / 783-04738-BL","steel id":"0101-0171-09375","qty":"4","location":"M006"},{"part":"783-08284","steel id":"0101-0171-09750","qty":"4","location":"M11 A-3"},{"part":"703-12037","steel id":"0101-0171-10125","qty":"2","location":"M9 R.1 SEC.10"},{"part":"703-04807","steel id":"0101-0171-10610","qty":"1","location":"M006"},{"part":"703-08644","steel id":"0101-0171-11500","qty":"2","location":"M9 R.2 SEC.3"},{"part":"703-03905","steel id":"0101-0171-11625","qty":"2","location":"M11"},{"part":"703-26145 / 703-26164","steel id":"0101-0171-12000","qty":"6","location":"M006"},{"part":"703-09760-BL","steel id":"0101-0171-12500","qty":"4","location":"M006"},{"part":"703-08605","steel id":"0101-0171-12600","qty":"3","location":"M006"},{"part":"703-68627-bl","steel id":"0101-0171-12750","qty":"1","location":"M006"},{"part":"703-09440","steel id":"0101-0171-13000","qty":"2","location":"M006"},{"part":"783-08309A","steel id":"0101-0171-14000","qty":"1","location":"M9 R.3 SEC.4"},{"part":"783-10128","steel id":"0101-0171-14375","qty":"2","location":"M006"},{"part":"783-04491A","steel id":"0101-0171-18419","qty":"2","location":"M007"},{"part":"781-0682","steel id":"0101-0171-25000","qty":"2","location":"M006"},{"part":"703-13224","steel id":"0101-0172-13420","qty":"1","location":"M6"},{"part":"703-05826B-BL","steel id":"0101-0172-13800","qty":"2","location":"M002"},{"part":"703-05826C","steel id":"0101-0172-13800","qty":"2","location":"M006"},{"part":"16577B","steel id":"0101-0172-01500","qty":"3","location":"M11 B-6"},{"part":"16578C","steel id":"0101-0186-04750","qty":"3","location":"M006"},{"part":"783-04742A","steel id":"0101-0186-01500","qty":"2","location":"M006"},{"part":"783-03648BLANK","steel id":"0101-0186-06000","qty":"1","location":"M006"},{"part":"783-05984C","steel id":"0101-0186-06125","qty":"5","location":"M11"},{"part":"783-1037","steel id":"0101-0186-06250","qty":"1","location":"M11 F-3"},{"part":"783-1036","steel id":"0101-0186-07250","qty":"1","location":"M11"},{"part":"783-04798-BL","steel id":"0101-0186-08750","qty":"1","location":"M11 H-5"},{"part":"783-04418","steel id":"0101-0186-09500","qty":"1","location":"M11"},{"part":"707-05092","steel id":"0101-0188-09500","qty":"1","location":"M006"},{"part":"783-04839B","steel id":"0101-0188-10500","qty":"1","location":"M006"},{"part":"783-05946","steel id":"0101-0188-12250","qty":"1","location":"M006"},{"part":"783-05946","steel id":"0101-0188-14375","qty":"1","location":"M006"},{"part":"703-11006","steel id":"0101-0202-04375","qty":"1","location":"M011"},{"part":"783-08357","steel id":"0101-0246-08250","qty":"1","location":"M11"},{"part":"783-08646A","steel id":"0101-0246-08500","qty":"1","location":"M11 I-5"},{"part":"703-12441","steel id":"0101-0246-09375","qty":"1","location":"M11 D-9"},{"part":"703-15421","steel id":"0101-0246-11000","qty":"1","location":"M11 G-2"}];
+const DATA = [{"part":"783-0678C","drawing":"0101-0246-14375","qty":"8","location":"M006"},{"part":"703-05785C-BL","drawing":"0101-0246-18402","qty":"2","location":"M006"},{"part":"703-12069","drawing":"0101-0246-20125","qty":"5","location":"M009"},{"part":"703-05957 / 05977 / 12965","drawing":"0101-0246-20500","qty":"3","location":"M006"},{"part":"781-0453C-BL","drawing":"0102-0082-21375","qty":"1","location":"M006"},{"part":"703-12062 / 12225","drawing":"0103-0082-10500","qty":"1","location":"M11 A-2"},{"part":"783-0335A","drawing":"0103-0082-25125","qty":"3","location":"M006"},{"part":"734-3176-BL","drawing":"0103-0082-31510","qty":"2","location":"M9 R.4 SEC.4"},{"part":"734-3175-BL","drawing":"0103-0082-36170","qty":"2","location":"M007"},{"part":"703-08657","drawing":"0103-0097-21250","qty":"1","location":"M006"},{"part":"783-08687","drawing":"0103-0097-33750","qty":"1","location":"M8 R.2 SEC.3"},{"part":"783-08734","drawing":"0103-0097-37750","qty":"1","location":"M008"},{"part":"783-09276-BL","drawing":"0103-0097-44375","qty":"2","location":"M008"},{"part":"783-08689A","drawing":"0103-0097-44375","qty":"1","location":"M006"},{"part":"783-08606","drawing":"0103-0112-08000","qty":"1","location":"M11 A-4"},{"part":"783-08590","drawing":"0103-0112-08875","qty":"1","location":"M009"},{"part":"787-03074-BL","drawing":"0103-0112-18750","qty":"2","location":"M006"},{"part":"703-13225","drawing":"0104-0056-177750","qty":"1","location":"M009"},{"part":"783-08342","drawing":"0104-0071-12625","qty":"5","location":"M9 R.4 SEC.3"},{"part":"783-04548C","drawing":"0104-0071-15200","qty":"5","location":"M009"},{"part":"703-08718","drawing":"0104-0071-26000","qty":"2","location":"M009"},{"part":"703-08722","drawing":"0104-0071-43000","qty":"1","location":"M009"},{"part":"703-08558","drawing":"0104-0071-48000","qty":"4","location":"M11 B-4"},{"part":"783-1489D","drawing":"0104-0082-06500","qty":"3","location":"M006"},{"part":"703-13123A / 26A","drawing":"0104-0082-09125","qty":"7","location":"M9 R.5 SEC.2"},{"part":"763-04081D","drawing":"0104-0082-13000","qty":"5","location":"M9 R.8 SEC.6"},{"part":"783-08452 / 08550","drawing":"0104-0082-14750","qty":"3","location":"M11 L-3"},{"part":"703-20904 / 20924","drawing":"0104-0082-17250","qty":"2","location":"M009"},{"part":"703-09153","drawing":"0104-0082-36000","qty":"3","location":"M11 C-2"},{"part":"703-13663","drawing":"0104-0097-04000","qty":"1","location":"M11 C-7"},{"part":"703-12943 / 703-15461","drawing":"0104-0097-05625","qty":"2","location":"M11 I-9"},{"part":"703-14741","drawing":"0104-0097-07000","qty":"1","location":"M11 H-3"},{"part":"703-13123","drawing":"0104-0097-07250","qty":"2","location":"M11"},{"part":"703-13001","drawing":"0104-0097-09125","qty":"3","location":"M11"},{"part":"703-15581","drawing":"0104-0097-09750","qty":"2","location":"M006"},{"part":"703-13761 / 15661","drawing":"0104-0097-09875","qty":"2","location":"M11 J-1"},{"part":"703-12068","drawing":"0104-0097-10375","qty":"2","location":"M006"},{"part":"783-08249 / 08386 / 08405 / 08276","drawing":"0104-0097-11875","qty":"4","location":"M006"},{"part":"783-08276","drawing":"0104-0097-13375","qty":"3","location":"M006"},{"part":"703-13026","drawing":"0104-0097-15500","qty":"6","location":"M009"},{"part":"703-16043A","drawing":"0104-0097-15875","qty":"5","location":"M009"},{"part":"703-12981 / 12982","drawing":"0104-0097-16750","qty":"1","location":"M006"},{"part":"703-13284 / 13285","drawing":"0104-0097-17000","qty":"6","location":"M009"},{"part":"703-3511B-BL","drawing":"0104-0097-19125","qty":"1","location":"M006"},{"part":"703-08621-bl","drawing":"0104-0097-19625","qty":"2","location":"M009"},{"part":"783-08247","drawing":"0104-0097-24000","qty":"7","location":"M009"},{"part":"783-08394 / 08397","drawing":"0104-0097-25000","qty":"5","location":"M006"},{"part":"783-08396 / 08398","drawing":"0104-0097-26250","qty":"4","location":"M009"},{"part":"783-0209D / 783-04475","drawing":"0104-0097-36500","qty":"8","location":"M009"},{"part":"783-08727","drawing":"0104-0112-02500","qty":"3","location":"M11 B-1"},{"part":"703-12963","drawing":"0104-0112-07500","qty":"1","location":"M11 G-3"},{"part":"","drawing":"0104-0112-07875","qty":"1","location":"M11 F-3"},{"part":"703-13882","drawing":"0104-0112-08000","qty":"1","location":"M11 J-4"},{"part":"783-08741","drawing":"0104-0112-08250","qty":"3","location":"M11 J-5"},{"part":"703-09325A","drawing":"0104-0112-13000","qty":"7","location":"M9 R.7 SEC.2"},{"part":"703-13343","drawing":"0104-0112-14750","qty":"3","location":"M006"},{"part":"703-12182","drawing":"0104-0112-30500","qty":"3","location":"M009"},{"part":"783-08502","drawing":"0104-0127-03625","qty":"1","location":"M11 C-4"},{"part":"783-08492","drawing":"0104-0127-04000","qty":"2","location":"M11 E-8"},{"part":"703-14922","drawing":"0104-0127-05750","qty":"1","location":"M11 B-3"},{"part":"703-13723","drawing":"0104-0127-06250","qty":"1","location":"M11 A-9"},{"part":"703-09670","drawing":"0104-0127-09500","qty":"2","location":"M11 J-3"},{"part":"703-12302","drawing":"0104-0127-11000","qty":"1","location":"M006"},{"part":"783-08559","drawing":"0104-0127-12000","qty":"2","location":"M006"},{"part":"703-09148","drawing":"0104-0127-12250","qty":"1","location":"M006"},{"part":"783-08266","drawing":"0104-0127-15750","qty":"5","location":"M006"},{"part":"783-08463","drawing":"0104-0127-22000","qty":"3","location":"M007"},{"part":"703-08785A","drawing":"0104-0142-02750","qty":"8","location":"M006"},{"part":"783-08876A","drawing":"0104-0142-04125","qty":"1","location":"M011"},{"part":"783-12788","drawing":"0104-0142-04875","qty":"2","location":"M006"},{"part":"783-07350","drawing":"0104-0142-05375","qty":"6","location":"M006"},{"part":"703-17062","drawing":"0104-0142-06500","qty":"1","location":"M11"},{"part":"783-04556A","drawing":"0104-0142-06820","qty":"1","location":"M11 H-6"},{"part":"783-08408","drawing":"0104-0142-07125","qty":"13","location":"M006"},{"part":"703-09154a","drawing":"0104-0142-07250","qty":"2","location":"M11"},{"part":"703-0703D","drawing":"0104-0142-07750","qty":"8","location":"M006"},{"part":"703-26424 / 703-26425","drawing":"0104-0142-08375","qty":"12","location":"M006"},{"part":"703-09968A","drawing":"0104-0142-09500","qty":"2","location":"M11"},{"part":"783-08722 /23","drawing":"0104-0142-11625","qty":"3","location":"M11 A-8"},{"part":"783-06587","drawing":"0104-0142-11750","qty":"2","location":"M006"},{"part":"783-04568","drawing":"0104-0142-12000","qty":"2","location":"M006"},{"part":"703-08614A / 08615A","drawing":"0104-0142-12500","qty":"2","location":"M11 F-1"},{"part":"703-13541","drawing":"0104-0142-13750","qty":"2","location":"M006"},{"part":"703-09621","drawing":"0104-0142-16375","qty":"1","location":"M9 R.9 SEC.1"},{"part":"703-12065B","drawing":"0104-0142-25500","qty":"10","location":"M008"},{"part":"703-17281 / 17301","drawing":"0104-0157-08250","qty":"1","location":"M11"},{"part":"703-18100","drawing":"0104-0157-09250","qty":"1","location":"M11"},{"part":"703-20144","drawing":"0104-0157-11875","qty":"1","location":"M006"},{"part":"703-08754a","drawing":"0104-0171-07500","qty":"1","location":"M006"},{"part":"783-08286","drawing":"0104-0171-08500","qty":"2","location":"M11 G-1"},{"part":"703-09595","drawing":"0104-0171-08625","qty":"2","location":"M11"},{"part":"783-08287","drawing":"0104-0171-09875","qty":"8","location":"M006"},{"part":"783-08337","drawing":"0104-0171-12875","qty":"4","location":"M006"},{"part":"703-13061-BL","drawing":"0104-0171-13750","qty":"2","location":"M006"},{"part":"703-26734","drawing":"0104-0171-14250","qty":"2","location":"M006"},{"part":"703-25664 / 665","drawing":"0104-0171-16375","qty":"1","location":"M006"},{"part":"781-1048-BL","drawing":"0104-0171-17500","qty":"2","location":"M006"},{"part":"783-08280","drawing":"0104-0171-33125","qty":"3","location":"M008"},{"part":"783-08511","drawing":"0104-0186-07750","qty":"1","location":"M11 D-7"},{"part":"703-20665 / 20666","drawing":"0104-0186-08375","qty":"3","location":"M11 B-6"},{"part":"783-05730B / 08138","drawing":"0104-0186-10625","qty":"6","location":"M9 R.6 SEC.3"},{"part":"783-08650","drawing":"0104-0186-10750","qty":"3","location":"M11 J-2"},{"part":"703-08600","drawing":"0104-0186-17500","qty":"2","location":"M009"},{"part":"703-20667 / 8 - 20964 / 5","drawing":"0104-0186-18250","qty":"2","location":"M6"},{"part":"703-12485","drawing":"0104-0246-08750","qty":"2","location":"M11 F-2"},{"part":"787-01503","drawing":"0110-0082-01500","qty":"3","location":"M11"},{"part":"781-04361","drawing":"0114-0246-10125","qty":"6","location":"M006"},{"part":"717-04075B","drawing":"0115-0171-06500","qty":"4","location":"M006"},{"part":"707-05113","drawing":"0118-0120-03375","qty":"2","location":"M006"},{"part":"783-06302","drawing":"0303-0034-29750","qty":"4","location":"M002"},{"part":"783-06598","drawing":"0303-0034-30000","qty":"4","location":"M002"},{"part":"783-06594/96/99","drawing":"0303-0034-32500","qty":"8","location":"M002"},{"part":"783-05736 / 37","drawing":"0303-0034-39750","qty":"4","location":"M002"},{"part":"783-08279","drawing":"0303-0044-55000","qty":"32","location":"M002"},{"part":"703-08642A","drawing":"0303-0056-25500","qty":"8","location":"M002"},{"part":"703-26991","drawing":"0303-0071-30000","qty":"","location":"SERVICE"},{"part":"783-0621-BL","drawing":"0303-0082-51250","qty":"44","location":"M006"},{"part":"783-06400A","drawing":"0303-0087-32000","qty":"26","location":"M002"},{"part":"783-06035 / 08575","drawing":"0303-0097-56500","qty":"20","location":"M002"},{"part":"783-08460","drawing":"0324-0097-35000","qty":"28","location":"M002"},{"part":"783-08370","drawing":"0401-0112-36000","qty":"2","location":"M11 L-1"},{"part":"783-08510","drawing":"0401-0038-13500","qty":"2","location":"M004"},{"part":"783-08547 / 08717","drawing":"0401-0038-14875","qty":"2","location":"M006"},{"part":"703-09083 / 703-09714A","drawing":"0401-0044-13250","qty":"3","location":"M004"},{"part":"783-08614","drawing":"0401-0044-14625","qty":"1","location":"M11 E-7"},{"part":"703-08622","drawing":"0401-0056-05250","qty":"1","location":"M11 B-7"},{"part":"703-15201A","drawing":"0401-0056-05625","qty":"1","location":"M11 D-6"},{"part":"736-04227A / 736-04228A","drawing":"0401-0056-05750","qty":"1","location":"M11 D-1"},{"part":"703-11100","drawing":"0401-0056-06250","qty":"1","location":"M11 H-4"},{"part":"703-09472","drawing":"0401-0056-07000","qty":"1","location":"M11 A-5"},{"part":"703-11503A","drawing":"0401-0056-08250","qty":"1","location":"M009"},{"part":"783-08453","drawing":"0401-0056-19000","qty":"3","location":"M11"},{"part":"790-00407A / 00410A","drawing":"0401-0063-22500","qty":"2","location":"M009"},{"part":"756-06163","drawing":"0401-0063-06800","qty":"4","location":"M11"},{"part":"783-08391-bl","drawing":"0403-0044-32500","qty":"3","location":"M007"},{"part":"703-15761","drawing":"0403-0071-05269","qty":"10","location":"M9 WALL"},{"part":"703-12843-BL","drawing":"0403-0071-27500","qty":"2","location":"M007"},{"part":"707-05079","drawing":"0403-0082-06375","qty":"5","location":"M009"},{"part":"783-04275 / 783-04326","drawing":"0403-0097-06000","qty":"8","location":"M009WALL"},{"part":"783-06227","drawing":"0422-0038-07000","qty":"14","location":"M009WALL"},{"part":"783-08567","drawing":"0422-0044-14250","qty":"1","location":"M11 I-10"},{"part":"745-06023A / 06024A","drawing":"0708-0063-08375","qty":"1","location":"M006"},{"part":"745-06025 / 06026","drawing":"0708-0112-01750","qty":"2","location":"M011"},{"part":"783-05129","drawing":"0708-0127-04000","qty":"2","location":"M11"},{"part":"783-08565A","drawing":"0711-0063-03750","qty":"3","location":"M11"},{"part":"783-08746","drawing":"0711-0063-03750","qty":"2","location":"M11 G-8"},{"part":"703-09195","drawing":"0901-0044-10600","qty":"2","location":"M011"},{"part":"783-08350","drawing":"0901-0034-13375","qty":"3","location":"M011"},{"part":"703-16042","drawing":"0901-0044-18500","qty":"2","location":"M009"},{"part":"703-16041","drawing":"0901-0056-16750","qty":"3","location":"M009"},{"part":"751-11053","drawing":"0903-0028-06125","qty":"2","location":"M9 WALL"},{"part":"","drawing":"0101-0171-10750","qty":"","location":"M006"},{"part":"","drawing":"0101-0171-10250","qty":"","location":"M006"},{"part":"783-05417 / 783-05418","drawing":"0101-0142-19250","qty":"6","location":"M006"},{"part":"707-04409B","drawing":"0101-0156-04000","qty":"1","location":"M006"},{"part":"783-05630E","drawing":"0101-0156-04000","qty":"7","location":"M006"},{"part":"783-05630B","drawing":"0101-0157-04250","qty":"1","location":"M11 E-5"},{"part":"783-08585","drawing":"0101-0157-04000","qty":"2","location":"M11 F-4"},{"part":"703-08656","drawing":"0101-0171-05000","qty":"2","location":"M11 G-8"},{"part":"703-09914","drawing":"0101-0171-05500","qty":"1","location":"M11 G-6"},{"part":"783-10538A","drawing":"0101-0171-06000","qty":"2","location":"M11 E-6"},{"part":"783-05381 / 05802","drawing":"0101-0171-06250","qty":"1","location":"M11 D-8"},{"part":"703-09185A / 703-12349","drawing":"0101-0171-07500","qty":"3","location":"M11 B-5"},{"part":"703-05468","drawing":"0101-0171-07750","qty":"1","location":"M11 I-8"},{"part":"703-08591A","drawing":"0101-0171-08500","qty":"2","location":"M11 L-3"},{"part":"781-10244","drawing":"0101-0171-08000","qty":"3","location":"M011"},{"part":"703-26741","drawing":"0101-0171-08690","qty":"1","location":"M11"},{"part":"783-08377 / 703-11052C","drawing":"0101-0171-09000","qty":"6","location":"M6"},{"part":"703-26186","drawing":"0101-0171-09125","qty":"4","location":"M006"},{"part":"783-04688-BL / 783-04738-BL","drawing":"0101-0171-09375","qty":"4","location":"M006"},{"part":"783-08284","drawing":"0101-0171-09750","qty":"4","location":"M11 A-3"},{"part":"703-12037","drawing":"0101-0171-10125","qty":"2","location":"M9 R.1 SEC.10"},{"part":"703-04807","drawing":"0101-0171-10610","qty":"1","location":"M006"},{"part":"703-08644","drawing":"0101-0171-11500","qty":"2","location":"M9 R.2 SEC.3"},{"part":"703-03905","drawing":"0101-0171-11625","qty":"2","location":"M11"},{"part":"703-26145 / 703-26164","drawing":"0101-0171-12000","qty":"6","location":"M006"},{"part":"703-09760-BL","drawing":"0101-0171-12500","qty":"4","location":"M006"},{"part":"703-08605","drawing":"0101-0171-12600","qty":"3","location":"M006"},{"part":"703-68627-bl","drawing":"0101-0171-12750","qty":"1","location":"M006"},{"part":"703-09440","drawing":"0101-0171-13000","qty":"2","location":"M006"},{"part":"783-08309A","drawing":"0101-0171-14000","qty":"1","location":"M9 R.3 SEC.4"},{"part":"783-10128","drawing":"0101-0171-14375","qty":"2","location":"M006"},{"part":"783-04491A","drawing":"0101-0171-18419","qty":"2","location":"M007"},{"part":"781-0682","drawing":"0101-0171-25000","qty":"2","location":"M006"},{"part":"703-13224","drawing":"0101-0172-13420","qty":"1","location":"M6"},{"part":"703-05826B-BL","drawing":"0101-0172-13800","qty":"2","location":"M002"},{"part":"703-05826C","drawing":"0101-0172-13800","qty":"2","location":"M006"},{"part":"16577B","drawing":"0101-0172-01500","qty":"3","location":"M11 B-6"},{"part":"16578C","drawing":"0101-0186-04750","qty":"3","location":"M006"},{"part":"783-04742A","drawing":"0101-0186-01500","qty":"2","location":"M006"},{"part":"783-03648BLANK","drawing":"0101-0186-06000","qty":"1","location":"M006"},{"part":"783-05984C","drawing":"0101-0186-06125","qty":"5","location":"M11"},{"part":"783-1037","drawing":"0101-0186-06250","qty":"1","location":"M11 F-3"},{"part":"783-1036","drawing":"0101-0186-07250","qty":"1","location":"M11"},{"part":"783-04798-BL","drawing":"0101-0186-08750","qty":"1","location":"M11 H-5"},{"part":"783-04418","drawing":"0101-0186-09500","qty":"1","location":"M11"},{"part":"707-05092","drawing":"0101-0188-09500","qty":"1","location":"M006"},{"part":"783-04839B","drawing":"0101-0188-10500","qty":"1","location":"M006"},{"part":"783-05946","drawing":"0101-0188-12250","qty":"1","location":"M006"},{"part":"783-05946","drawing":"0101-0188-14375","qty":"1","location":"M006"},{"part":"703-11006","drawing":"0101-0202-04375","qty":"1","location":"M011"},{"part":"783-08357","drawing":"0101-0246-08250","qty":"1","location":"M11"},{"part":"783-08646A","drawing":"0101-0246-08500","qty":"1","location":"M11 I-5"},{"part":"703-12441","drawing":"0101-0246-09375","qty":"1","location":"M11 D-9"},{"part":"703-15421","drawing":"0101-0246-11000","qty":"1","location":"M11 G-2"}];
 
-// ── State ──
 let currentFilter = 'all';
+
 document.getElementById('totalCount').textContent = DATA.length + ' parts';
 
-// ── Service Worker ──
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js')
-    .then(reg => console.log('SW registered:', reg.scope))
-    .catch(err => console.log('SW error:', err));
-}
-
-// ── Offline detection ──
-function updateOnlineStatus() {
-  document.getElementById('offlineBanner').classList.toggle('show', !navigator.onLine);
-}
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
-updateOnlineStatus();
-
-// ── Install prompt (Android Chrome) ──
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installBanner').classList.add('show');
-});
-document.getElementById('installBtn').addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  document.getElementById('installBanner').classList.remove('show');
-});
-document.getElementById('dismissBtn').addEventListener('click', () => {
-  document.getElementById('installBanner').classList.remove('show');
-});
-window.addEventListener('appinstalled', () => {
-  document.getElementById('installBanner').classList.remove('show');
-});
-
-// ── Search logic ──
 function setFilter(f, el) {
   currentFilter = f;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   const q = document.getElementById('searchInput').value;
-  if (q) handleSearch(q); else showEmptyState();
+  if (q) handleSearch(q);
 }
 
 function highlight(text, query) {
   if (!query || !text) return text || '';
-  const e = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return text.replace(new RegExp(`(${e})`, 'gi'), '<mark>$1</mark>');
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
 }
 
-function norm(s) { return s ? s.toLowerCase().replace(/\b0+(\d)/g, '$1') : ''; }
+// Normalize a string for search: lowercase and strip leading zeros from numeric segments
+function normalizeForSearch(str) {
+  if (!str) return '';
+  return str.toLowerCase().replace(/\b0+(\d)/g, '$1');
+}
 
 function handleSearch(query) {
-  const raw = query.trim().toLowerCase(), q = norm(raw);
+  const raw = query.trim().toLowerCase();
+  const q = normalizeForSearch(raw);
   const grid = document.getElementById('resultsGrid');
   const info = document.getElementById('resultsInfo');
-  if (!q) { grid.innerHTML = ''; info.textContent = ''; showEmptyState(); return; }
 
-  const results = DATA.filter(r => {
-    const p = norm(r.part), d = norm(r.steel), l = norm(r.location);
-    if (currentFilter === 'part') return p.includes(q);
-    if (currentFilter === 'steelid') return'' d.includes(q);
-    if (currentFilter === 'location') return l.includes(q);
-    return p.includes(q) || d.includes(q) || l.includes(q);
+  if (!q) {
+    grid.innerHTML = '';
+    info.textContent = '';
+    showEmptyState();
+    return;
+  }
+
+  const results = DATA.filter(row => {
+    const part = normalizeForSearch(row.part);
+    const drawing = normalizeForSearch(row.drawing);
+    const location = normalizeForSearch(row.location);
+    if (currentFilter === 'part') return part.includes(q);
+    if (currentFilter === 'drawing') return drawing.includes(q);
+    if (currentFilter === 'location') return location.includes(q);
+    return part.includes(q) || drawing.includes(q) || location.includes(q);
   });
 
   grid.innerHTML = '';
+
   if (results.length === 0) {
-    info.innerHTML = `No results for <span class="hl">"${query}"</span>`;
+    info.innerHTML = `No results for <span>"${query}"</span>`;
     grid.innerHTML = `<div class="no-results">🔍 No matching parts found.<br>Try a partial number or different field.</div>`;
     return;
   }
 
-  info.innerHTML = `<span class="hl">${results.length}</span> result${results.length !== 1 ? 's' : ''} for "${query}"`;
+  info.innerHTML = `<span>${results.length}</span> result${results.length !== 1 ? 's' : ''} for "${query}"`;
 
-  results.forEach((row, i) => {
+  results.forEach(row => {
     const card = document.createElement('div');
     card.className = 'result-card';
-    card.style.animationDelay = (i * 0.025) + 's';
     card.innerHTML = `
       <div>
         <div class="result-part">${highlight(row.part || '(no part #)', q)}</div>
-        <div class="result-steel" data-dwg="${row.steel}">
-          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-          ${highlight(row.steel, q)}
-        </div>
-        ${row.qty ? `<div class="result-qty">QTY <span>${row.qty}</span></div>` : ''}
+        <div class="result-drawing" title="Click to copy drawing number" style="cursor:pointer;" data-dwg="${row.drawing}">📐 ${highlight(row.drawing, q)}</div>
+        ${row.qty ? `<div class="result-qty">QTY: <span>${row.qty}</span></div>` : ''}
       </div>
       <div class="location-badge">${highlight(row.location, q)}</div>
-      <button class="speak-btn">🔊</button>`;
-    card.querySelector('.result-steel id.addEventListenerer('click', e => {
+      <button class="speak-btn" title="Read aloud">🔊</button>
+    `;
+    card.querySelector('.result-drawing').addEventListener('click', (e) => {
       e.stopPropagation();
-      navigator.clipboard.writeText(e.currentTarget.dataset.dwg).then(() => {
-        const el = e.currentTarget, orig = el.innerHTML;
+      const dwg = e.currentTarget.dataset.dwg;
+      navigator.clipboard.writeText(dwg).then(() => {
+        const el = e.currentTarget;
+        const orig = el.innerHTML;
         el.innerHTML = '✅ Copied!';
         setTimeout(() => { el.innerHTML = orig; }, 1200);
       }).catch(() => {});
     });
-    card.querySelector('.speak-btn').addEventListener('click', e => {
-      e.stopPropagation(); speakResult(row, card.querySelector('.speak-btn'));
+    card.querySelector('.speak-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      speakResult(row, card.querySelector('.speak-btn'));
     });
     grid.appendChild(card);
   });
 }
 
 function speakResult(row, btn) {
-  if (!window.speechSynthesis) { alert('Voice not supported.'); return; }
+  if (!window.speechSynthesis) {
+    alert('Voice not supported in this browser.');
+    return;
+  }
   window.speechSynthesis.cancel();
-  const text = [
-    row.part ? row.part + '.' : '',
-    row.steel ? 'steel: ' + row.steel.split('').join(' ') + '.' : '',
-    'Location: ' + row.location + '.',
-    row.qty ? 'Quantity: ' + row.qty + '.' : ''
-  ].filter(Boolean).join(' ');
-  const u = new SpeechSynthesisUtterance(text); u.rate = 0.9;
-  if (btn) { btn.classList.add('speaking'); u.onend = () => btn.classList.remove('speaking'); }
-  window.speechSynthesis.speak(u);
+  const part = row.part ? row.part + '.' : '';
+  const dwg = row.drawing ? 'Drawing: ' + row.drawing.split('').join(' ') + '.' : '';
+  const loc = 'Location: ' + row.location + '.';
+  const qty = row.qty ? 'Quantity: ' + row.qty + '.' : '';
+  const text = [part, dwg, loc, qty].filter(Boolean).join(' ');
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.9;
+  if (btn) {
+    btn.classList.add('speaking');
+    utterance.onend = () => btn.classList.remove('speaking');
+  }
+  window.speechSynthesis.speak(utterance);
 }
 
 function showEmptyState() {
-  document.getElementById('resultsGrid').innerHTML = `
-    <div class="empty-state">
-      <div class="empty-icon">
-        <svg viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z"/></svg>
-      </div>
-      <p>Search by part number, steel number,<br>or bay location</p>
-      <div class="empty-hint">e.g. "M11 B-4"</div>
-    </div>`;
+  const grid = document.getElementById('resultsGrid');
+  grid.innerHTML = `<div class="empty-state"><div class="icon">🔧</div><p>Search by part number, drawing number,<br>or location like <em style="color:var(--accent)">"M11 B-4"</em></p></div>`;
 }
 
 function clearSearch() {
@@ -542,6 +425,7 @@ function clearSearch() {
   showEmptyState();
 }
 
+// Init
 showEmptyState();
 </script>
 </body>
